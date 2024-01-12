@@ -89,7 +89,6 @@ def download(relative_path: str) -> None:
 
     else:
         print(f"Failed to download file from {BASE_URL}{relative_path}... Status code: {response.status_code}")
-        raise SystemExit(response.status_code) from None
 
 def find_file_path(html: Tag, extension: str = "") -> list[str]:
     """
