@@ -33,31 +33,42 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
 > </table>
 
 ## Installation
-1. Verify that conda is installed
+1. Open terminal
+   * Mac
+      * Press `⌘` + `Space` keys
+      * Type `terminal` **OR** (if applicable) your preferred terminal (e.g. `iterm`, etc.)
+      * Press `Enter` key
+   * Linux
+      * Press `Ctrl` + `Alt` + `T` keys
+   * Windows
+      * Click search box **OR** open Start menu
+      * Type `cmd`
+      * Click `Command Prompt`, `Open`, **OR** (if needed) `Run as administrator`
+2. Verify that conda is installed
    ```
    conda --version
    ```
-2. Ensure conda is up to date
+3. Ensure conda is up to date
    ```
    conda update conda
    ```
-3. If necessary, enter the directory where you want the repository (`downloader`) to be cloned
+4. If necessary, enter the directory where you want the repository (`downloader`) to be cloned
    ```
    cd path/to/directory
    ```
-4. Clone the repository (`downloader`), then enter its directory
+5. Clone the repository (`downloader`), then enter its directory
    ```
    git clone https://github.com/lynkos/downloader && cd downloader
    ```
-5. Create a conda virtual environment from `environment.yml`
+6. Create a conda virtual environment from `environment.yml`
    ```
    conda env create -f environment.yml
    ```
-6. Activate the virtual environment (`dl_env`)
+7. Activate the virtual environment (`dl_env`)
    ```
    conda activate dl_env
    ```
-7. Confirm that the virtual environment (`dl_env`) is active
+8. Confirm that the virtual environment (`dl_env`) is active
    * If active, the virtual environment's name should be in parentheses `()` or brackets `[]` before your command prompt, e.g.
       ```
       (dl_env) $
@@ -72,7 +83,7 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
       ```
 
 ## Usage
-### Command Line
+### Terminal
 1. Run `main.py`
    * UNIX
       ```
@@ -95,7 +106,7 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
       ```
     * PC
       ```
-      CTRL + Shift + P
+      Ctrl + Shift + P
       ```
 2. Search and select `Python: Select Interpreter`
 3. Select the virtual environment (`dl_env`)
