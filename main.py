@@ -88,7 +88,7 @@ def download(relative_path: str) -> None:
             file.write(response.content)
 
     else:
-        print(f"Failed to download file from {BASE_URL}{relative_path}... Status code: {response.status_code}")
+        print(f"Failed to download file from {BASE_URL}{relative_path}... Status code: {response.status_code}\n")
 
 def find_file_path(html: Tag, extension: str = "") -> list[str]:
     """
