@@ -88,7 +88,7 @@ def download(relative_path: str) -> None:
         with open(path.join(FOLDER_NAME, path.basename(relative_path)), "wb") as file:
             file.write(response.content)
 
-def find_path(html: Tag, extension: str = "") -> list[str]:
+def find_file_path(html: Tag, extension: str = "") -> list[str]:
     """
     Find path(s) of desired file(s) within HTML src tags
 
@@ -110,8 +110,8 @@ if __name__ == "__main__":
         relative_paths = [ ]
         
         for chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
-            if find_path(chunk, FILE_EXTENSION):
-                relative_paths.append(find_path(chunk)[0])
+            if find_file_path(chunk, FILE_EXTENSION):
+                relative_paths.append(find_file_path(chunk)[0])
 
         if not path.isdir(FOLDER_NAME):
             makedirs(FOLDER_NAME)
