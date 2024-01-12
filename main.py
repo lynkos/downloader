@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup, Tag
 from concurrent.futures import ProcessPoolExecutor
-from os import getcwd, makedirs, path
+from os import getcwd, listdir, makedirs, path, rmdir
 from re import findall
 from requests import get, exceptions, Response
 from time import perf_counter
@@ -89,7 +89,10 @@ def get_file_path(html: Tag, extension: str = "") -> str:
 if __name__ == "__main__":
     print("Starting script...\n")
     start = perf_counter()
-    
+
+    if not path.isdir(FOLDER_NAME):
+        makedirs(FOLDER_NAME)
+
     for subdirectory in URL_SUBDIRECTORIES:
         response = connect(subdirectory)
 
@@ -101,16 +104,15 @@ if __name__ == "__main__":
                 if get_file_path(html_chunk, ".mp3"):
                     relative_paths.append(get_file_path(html_chunk))
 
-            if not path.isdir(FOLDER_NAME):
-                makedirs(FOLDER_NAME)
-
             with ProcessPoolExecutor() as executor:
                 print(f"Downloading .mp3 file(s) from {BASE_URL}{subdirectory} to {path.join(getcwd(), FOLDER_NAME)}\n")
                 executor.map(download, relative_paths)
 
         else:
             print(f"Failed to connect to {BASE_URL}{subdirectory}\n")
-            continue
+
+    if not listdir(FOLDER_NAME): 
+        rmdir(FOLDER_NAME)
 
     end = perf_counter()
     print(f"Total runtime: {(end - start):.2f} second(s)")
