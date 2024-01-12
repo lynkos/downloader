@@ -86,18 +86,18 @@ def download(relative_path: str) -> None:
     else:
         print(f"Failed to download file from {BASE_URL}{relative_path}... Status code: {response.status_code}\n")
 
-def find_file_path(html: Tag, extension: str = "") -> list[str]:
+def get_file_path(html: Tag, extension: str = "") -> str:
     """
-    Find path(s) of desired file(s) within HTML `src` tags
+    Extract file path (with given extension, if applicable) from HTML `src` tag
 
     Args:
         html (Tag): HTML to search
         extension (str, optional): File extension; defaults to empty string ""
 
     Returns:
-        list[str]: List of strings of file path(s) (with given extension, if applicable) within HTML `src` tags
+        str: File path (with given extension, if applicable) within HTML `src` tag
     """
-    return findall(rf"src=\"(.*?){extension}\"", str(html).strip())
+    return findall(rf"src=\"(.*?){extension}\"", str(html).strip())[0]
 
 if __name__ == "__main__":
     print("Starting script...\n")
@@ -108,8 +108,8 @@ if __name__ == "__main__":
         relative_paths = [ ]
         
         for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
-            if find_file_path(html_chunk, ".mp3"):
-                relative_paths.append(find_file_path(html_chunk)[0])
+            if get_file_path(html_chunk, ".mp3"):
+                relative_paths.append(get_file_path(html_chunk))
 
         if not path.isdir(FOLDER_NAME):
             makedirs(FOLDER_NAME)
