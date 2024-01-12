@@ -6,7 +6,7 @@ from requests import get, exceptions, Response
 from time import perf_counter
 
 BASE_URL: str = "https://minecraft.wiki"
-URL_SUBDIRECTORY: str = "/w/Villager"
+URL_SUBDIRECTORY: list[str] = [ "/w/Villager", "/w/Pillager" ]
 FOLDER_NAME: str = "files"
 CSS_SELECTOR: str = "[data-title=\"MP3\"]"
 TIMEOUT: int = 10
@@ -101,27 +101,30 @@ def get_file_path(html: Tag, extension: str = "") -> str:
 
 if __name__ == "__main__":
     print("Starting script...\n")
-    response = connect(URL_SUBDIRECTORY)
 
-    if response.status_code == 200:
-        print(f"Successfully connected to {BASE_URL}{URL_SUBDIRECTORY}\n")
-        relative_paths = [ ]
-        
-        for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
-            if get_file_path(html_chunk, ".mp3"):
-                relative_paths.append(get_file_path(html_chunk))
+    start = perf_counter()
+    for url in URL_SUBDIRECTORY:
+        response = connect(url)
 
-        if not path.isdir(FOLDER_NAME):
-            makedirs(FOLDER_NAME)
+        if response.status_code == 200:
+            print(f"Successfully connected to {BASE_URL}{url}\n")
+            relative_paths = [ ]
+            
+            for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
+                if get_file_path(html_chunk, ".mp3"):
+                    relative_paths.append(get_file_path(html_chunk))
 
-        start = perf_counter()
-        with ProcessPoolExecutor() as executor:
-            print(f"Downloading .mp3 file(s) to {path.join(getcwd(), FOLDER_NAME)}\n")
-            executor.map(download, relative_paths)
-        end = perf_counter()
+            if not path.isdir(FOLDER_NAME):
+                makedirs(FOLDER_NAME)
 
-        print(f"Completed file download(s) in {(end - start):.2f} second(s)")
+            with ProcessPoolExecutor() as executor:
+                print(f"Downloading .mp3 file(s) from {BASE_URL}{url} to {path.join(getcwd(), FOLDER_NAME)}\n")
+                executor.map(download, relative_paths)
 
-    else:
-        print("Failed to retrieve the webpage... Status code:", response.status_code)
-        raise SystemExit(response.status_code) from None
+        else:
+            end = perf_counter()
+            print(f"Failed to connect to {BASE_URL}{url}... Status code: {response.status_code}, Total runtime: {(end - start):.2f} second(s)")
+            raise SystemExit(response.status_code) from None
+
+    end = perf_counter()
+    print(f"Completed file download(s) in {(end - start):.2f} second(s)")
