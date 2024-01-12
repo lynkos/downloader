@@ -3,7 +3,7 @@ from concurrent.futures import ProcessPoolExecutor
 from os import getcwd, makedirs, path
 from re import findall
 from requests import get, exceptions, Response
-from time import time
+from time import perf_counter
 
 BASE_URL: str = "https://minecraft.wiki"
 URL_SUBDIRECTORY: str = "/w/Villager"
@@ -114,11 +114,11 @@ if __name__ == "__main__":
         if not path.isdir(FOLDER_NAME):
             makedirs(FOLDER_NAME)
 
-        start = time()
+        start = perf_counter()
         with ProcessPoolExecutor() as executor:
             print(f"Downloading .mp3 file(s) to {path.join(getcwd(), FOLDER_NAME)}\n")
             executor.map(download, relative_paths)
-        end = time()
+        end = perf_counter()
 
         print(f"Completed file download(s) in {(end - start):.2f} second(s)")
 
