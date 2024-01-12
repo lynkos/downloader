@@ -1,4 +1,4 @@
-name: script_env
+name: dl_env
 channels:
   - defaults
 dependencies:
