@@ -11,64 +11,51 @@ FOLDER_NAME: str = "files"
 CSS_SELECTOR: str = "[data-title=\"MP3\"]"
 TIMEOUT: int = 10
 
-def connect(relative_path: str) -> Response:
+def connect(relative_path: str) -> Response | None:
     """
     Connect to `{BASE_URL}{relative_path}`
 
     Args:
         relative_path (str): Relative path (i.e. anything after `{BASE_URL}`) of URL to connect to
         
-    Raises:
-        SystemExit: Exit from interpreter if a request exception/error occurs
-
     Returns:
-        Response: Request response
+        Response | None: HTTP request response (if applicable), else None
     """
     try:
-        response = get(f"{BASE_URL}{relative_path}", allow_redirects = True, stream = True, timeout = TIMEOUT)
-        response.raise_for_status()
+        return get(f"{BASE_URL}{relative_path}", allow_redirects = True, stream = True, timeout = TIMEOUT)
 
     except exceptions.ConnectTimeout as error:
-        print(f"Request to {BASE_URL}{relative_path} timed out after {TIMEOUT} seconds")
-        raise SystemExit(error) from None
+        print(f"Request to {BASE_URL}{relative_path} timed out after {TIMEOUT} seconds\n")
 
     except exceptions.ReadTimeout as error:
-        print(f"{BASE_URL}{relative_path} failed to send data within {TIMEOUT} seconds")
-        raise SystemExit(error) from None
+        print(f"{BASE_URL}{relative_path} failed to send data within {TIMEOUT} seconds\n")
 
     except exceptions.TooManyRedirects as error:
-        print("Too many redirects")
-        raise SystemExit(error) from None
+        print("Too many redirects\n")
 
     except exceptions.URLRequired as error:
-        print("URL is required to make a request")
-        raise SystemExit(error) from None
+        print("URL is required to make a request\n")
 
     except exceptions.InvalidURL as error:
-        print(f"{BASE_URL}{relative_path} is not a valid URL")
-        raise SystemExit(error) from None
+        print(f"{BASE_URL}{relative_path} is not a valid URL\n")
+
+    except exceptions.HTTPError as error:
+        print("HTTP error\n")
 
     except exceptions.SSLError as error:
-        print("SSL error")
-        raise SystemExit(error) from None
+        print("SSL error\n")
 
     except exceptions.ProxyError as error:
-        print("Proxy error")
-        raise SystemExit(error) from None
+        print("Proxy error\n")
 
     except exceptions.ConnectionError as error:
-        print("Connection error")
-        raise SystemExit(error) from None
+        print("Connection error\n")
 
     except exceptions.RequestException as error:
-        print("Unable to handle request")
-        raise SystemExit(error) from None
+        print("Unable to handle request\n")
 
     except Exception as error:
-        print("Error occurred:", error)
-        raise SystemExit(error) from None
-
-    return response
+        print(f"Error occurred: {error}\n")
 
 def download(relative_path: str) -> None:
     """
@@ -79,12 +66,12 @@ def download(relative_path: str) -> None:
     """
     response = connect(relative_path)
     
-    if response.status_code == 200:
+    if response and response.status_code == 200:
         with open(path.join(FOLDER_NAME, path.basename(relative_path)), "wb") as file:
             file.write(response.content)
 
     else:
-        print(f"Failed to download file from {BASE_URL}{relative_path}... Status code: {response.status_code}\n")
+        print(f"Failed to download file from {BASE_URL}{relative_path}\n")
 
 def get_file_path(html: Tag, extension: str = "") -> str:
     """
@@ -106,7 +93,7 @@ if __name__ == "__main__":
     for subdirectory in URL_SUBDIRECTORIES:
         response = connect(subdirectory)
 
-        if response.status_code == 200:
+        if response and response.status_code == 200:
             print(f"Successfully connected to {BASE_URL}{subdirectory}\n")
             relative_paths = [ ]
             
@@ -126,4 +113,4 @@ if __name__ == "__main__":
             continue
 
     end = perf_counter()
-    print(f"Completed file download(s) in {(end - start):.2f} second(s)")
+    print(f"Total runtime: {(end - start):.2f} second(s)")
