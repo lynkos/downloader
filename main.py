@@ -12,24 +12,24 @@ FOLDER_NAME: str = "files"
 CSS_SELECTOR: str = "[data-title=\"MP3\"]"
 TIMEOUT: int = 10
 
-def connect(absolute_url: str) -> Response | None:
+def connect(url: str) -> Response | None:
     """
-    Connect to `{absolute_url}`
+    Connect to `{url}`
 
     Args:
-        absolute_url (str): Absolute URL to connect to
+        url (str): URL to connect to
         
     Returns:
         Response | None: HTTP request response if applicable, else None
     """
     try:
-        return get(absolute_url, allow_redirects = True, stream = True, timeout = TIMEOUT)
+        return get(url, allow_redirects = True, stream = True, timeout = TIMEOUT)
 
     except exceptions.ConnectTimeout:
-        print(f"Request to {absolute_url} timed out after {TIMEOUT} seconds")
+        print(f"Request to {url} timed out after {TIMEOUT} seconds")
 
     except exceptions.ReadTimeout:
-        print(f"{absolute_url} failed to send data within {TIMEOUT} seconds")
+        print(f"{url} failed to send data within {TIMEOUT} seconds")
 
     except exceptions.TooManyRedirects:
         print("Too many redirects")
@@ -38,7 +38,7 @@ def connect(absolute_url: str) -> Response | None:
         print("URL is required to make a request")
 
     except exceptions.InvalidURL:
-        print(f"{absolute_url} is not a valid URL")
+        print(f"{url} is not a valid URL")
 
     except exceptions.HTTPError:
         print("HTTP error")
@@ -58,21 +58,21 @@ def connect(absolute_url: str) -> Response | None:
     except Exception as error:
         print(f"Error occurred: {error}")
 
-def download(absolute_url: str) -> None:
+def download(url: str) -> None:
     """
-    Download file from `{absolute_url}`
+    Download file from `{url}`
 
     Args:
-        absolute_url (str): Absolute URL of file to download
+        url (str): URL of file to download
     """
-    response = connect(absolute_url)
+    response = connect(url)
     
     if response and response.status_code == 200:
-        with open(path.join(FOLDER_NAME, path.basename(absolute_url)), "wb") as file:
+        with open(path.join(FOLDER_NAME, path.basename(url)), "wb") as file:
             file.write(response.content)
 
     else:
-        print(f"Failed to download file from {absolute_url}\n")
+        print(f"Failed to download file from {url}\n")
 
 def get_file_url(html: Tag, extension: str = "") -> str:
     """
@@ -85,34 +85,34 @@ def get_file_url(html: Tag, extension: str = "") -> str:
     Returns:
         str: File URL
     """
-    return relative_to_absolute_url(findall(rf"src=\"(.*?){extension}\"", str(html).strip())[0])
+    return absolute_url(findall(rf"src=\"(.*?){extension}\"", str(html).strip())[0])
 
-def relative_to_absolute_url(relative_url: str) -> str:
+def absolute_url(url: str) -> str:
     """
-    Convert relative URL to absolute URL
+    Convert URL to absolute URL
 
     Args:
-        relative_url (str): Relative URL
+        url (str): URL
 
     Returns:
         str: Absolute URL
     """
-    if relative_url.startswith(("https://", "http://", "www.")):
-        return relative_url
+    if url.startswith(("https://", "http://", "www.")):
+        return url
 
-    return urljoin(BASE_URL, relative_url)
+    return urljoin(BASE_URL, url)
 
-def work(absolute_url: str) -> None:
+def work(url: str) -> None:
     """
-    Get URL(s) of .mp3 file(s) from `{absolute_url}` and download to `{FOLDER_NAME}`
+    Get URL(s) of .mp3 file(s) from `{url}` and download to `{FOLDER_NAME}`
 
     Args:
-        absolute_url (str): Absolute URL of file(s) to download
+        url (str): URL of file(s) to download
     """
-    response = connect(absolute_url)
+    response = connect(url)
 
     if response and response.status_code == 200:
-        print(f"Successfully connected to {absolute_url}\n")
+        print(f"Successfully connected to {url}\n")
         file_urls = [ ]
         
         for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
@@ -120,11 +120,11 @@ def work(absolute_url: str) -> None:
                 file_urls.append(get_file_url(html_chunk))
 
         with ProcessPoolExecutor() as executor:
-            print(f"Downloading .mp3 file(s) from {absolute_url} to {path.join(getcwd(), FOLDER_NAME)}\n")
+            print(f"Downloading .mp3 file(s) from {url} to {path.join(getcwd(), FOLDER_NAME)}\n")
             executor.map(download, file_urls)
 
     else:
-        print(f"Failed to connect to {absolute_url}\n")
+        print(f"Failed to connect to {url}\n")
     
 if __name__ == "__main__":
     print("Starting script...\n")
@@ -133,8 +133,8 @@ if __name__ == "__main__":
     if not path.isdir(FOLDER_NAME):
         makedirs(FOLDER_NAME)
 
-    for url in RELATIVE_URLS:
-        work(relative_to_absolute_url(url))
+    for relative_url in RELATIVE_URLS:
+        work(absolute_url(relative_url))
 
     if not listdir(FOLDER_NAME): 
         rmdir(FOLDER_NAME)
