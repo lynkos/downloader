@@ -4,31 +4,32 @@ from os import getcwd, listdir, makedirs, path, rmdir
 from re import findall
 from requests import get, exceptions, Response
 from time import perf_counter
+from urllib.parse import urljoin
 
 BASE_URL: str = "https://minecraft.wiki"
-URL_SUBDIRECTORIES: list[str] = [ "/w/Villager", "/w/Pillager" ]
+RELATIVE_URLS: list[str] = [ "/w/Villager", "/w/Pillager" ]
 FOLDER_NAME: str = "files"
 CSS_SELECTOR: str = "[data-title=\"MP3\"]"
 TIMEOUT: int = 10
 
-def connect(relative_path: str) -> Response | None:
+def connect(absolute_url: str) -> Response | None:
     """
-    Connect to `{BASE_URL}{relative_path}`
+    Connect to `{absolute_url}`
 
     Args:
-        relative_path (str): Relative path (i.e. anything after `{BASE_URL}`) of URL to connect to
+        absolute_url (str): Absolute URL to connect to
         
     Returns:
         Response | None: HTTP request response if applicable, else None
     """
     try:
-        return get(f"{BASE_URL}{relative_path}", allow_redirects = True, stream = True, timeout = TIMEOUT)
+        return get(absolute_url, allow_redirects = True, stream = True, timeout = TIMEOUT)
 
     except exceptions.ConnectTimeout:
-        print(f"Request to {BASE_URL}{relative_path} timed out after {TIMEOUT} seconds")
+        print(f"Request to {absolute_url} timed out after {TIMEOUT} seconds")
 
     except exceptions.ReadTimeout:
-        print(f"{BASE_URL}{relative_path} failed to send data within {TIMEOUT} seconds")
+        print(f"{absolute_url} failed to send data within {TIMEOUT} seconds")
 
     except exceptions.TooManyRedirects:
         print("Too many redirects")
@@ -37,7 +38,7 @@ def connect(relative_path: str) -> Response | None:
         print("URL is required to make a request")
 
     except exceptions.InvalidURL:
-        print(f"{BASE_URL}{relative_path} is not a valid URL")
+        print(f"{absolute_url} is not a valid URL")
 
     except exceptions.HTTPError:
         print("HTTP error")
@@ -57,35 +58,74 @@ def connect(relative_path: str) -> Response | None:
     except Exception as error:
         print(f"Error occurred: {error}")
 
-def download(relative_path: str) -> None:
+def download(absolute_url: str) -> None:
     """
-    Download file from `{BASE_URL}{relative_path}` and save to `{FOLDER_NAME}{relative_path}`
+    Download file from `{absolute_url}`
 
     Args:
-        relative_path (str): Relative path (i.e. anything after `{BASE_URL}`) of file to download
+        absolute_url (str): Absolute URL of file to download
     """
-    response = connect(relative_path)
+    response = connect(absolute_url)
     
     if response and response.status_code == 200:
-        with open(path.join(FOLDER_NAME, path.basename(relative_path)), "wb") as file:
+        with open(path.join(FOLDER_NAME, path.basename(absolute_url)), "wb") as file:
             file.write(response.content)
 
     else:
-        print(f"Failed to download file from {BASE_URL}{relative_path}\n")
+        print(f"Failed to download file from {absolute_url}\n")
 
-def get_file_path(html: Tag, extension: str = "") -> str:
+def get_file_url(html: Tag, extension: str = "") -> str:
     """
-    Extract file path (with given extension, if applicable) from HTML `src` tag
+    Extract file URL (with given extension, if applicable) from HTML `src` tag
 
     Args:
         html (Tag): HTML to search
         extension (str, optional): File extension; defaults to empty string ""
 
     Returns:
-        str: File path (with given extension, if applicable) within HTML `src` tag
+        str: File URL
     """
-    return findall(rf"src=\"(.*?){extension}\"", str(html).strip())[0]
+    return relative_to_absolute_url(findall(rf"src=\"(.*?){extension}\"", str(html).strip())[0])
 
+def relative_to_absolute_url(relative_url: str) -> str:
+    """
+    Convert relative URL to absolute URL
+
+    Args:
+        relative_url (str): Relative URL
+
+    Returns:
+        str: Absolute URL
+    """
+    if relative_url.startswith(("https://", "http://", "www.")):
+        return relative_url
+
+    return urljoin(BASE_URL, relative_url)
+
+def work(absolute_url: str) -> None:
+    """
+    Get URL(s) of .mp3 file(s) from `{absolute_url}` and download to `{FOLDER_NAME}`
+
+    Args:
+        absolute_url (str): Absolute URL of file(s) to download
+    """
+    response = connect(absolute_url)
+
+    if response and response.status_code == 200:
+        print(f"Successfully connected to {absolute_url}\n")
+        file_urls = [ ]
+        
+        for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
+            if get_file_url(html_chunk, ".mp3"):
+                file_urls.append(get_file_url(html_chunk))
+
+        with ProcessPoolExecutor() as executor:
+            print(f"Downloading .mp3 file(s) from {absolute_url} to {path.join(getcwd(), FOLDER_NAME)}\n")
+            executor.map(download, file_urls)
+
+    else:
+        print(f"Failed to connect to {absolute_url}\n")
+    
 if __name__ == "__main__":
     print("Starting script...\n")
     start = perf_counter()
@@ -93,23 +133,8 @@ if __name__ == "__main__":
     if not path.isdir(FOLDER_NAME):
         makedirs(FOLDER_NAME)
 
-    for subdirectory in URL_SUBDIRECTORIES:
-        response = connect(subdirectory)
-
-        if response and response.status_code == 200:
-            print(f"Successfully connected to {BASE_URL}{subdirectory}\n")
-            relative_paths = [ ]
-            
-            for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
-                if get_file_path(html_chunk, ".mp3"):
-                    relative_paths.append(get_file_path(html_chunk))
-
-            with ProcessPoolExecutor() as executor:
-                print(f"Downloading .mp3 file(s) from {BASE_URL}{subdirectory} to {path.join(getcwd(), FOLDER_NAME)}\n")
-                executor.map(download, relative_paths)
-
-        else:
-            print(f"Failed to connect to {BASE_URL}{subdirectory}\n")
+    for url in RELATIVE_URLS:
+        work(relative_to_absolute_url(url))
 
     if not listdir(FOLDER_NAME): 
         rmdir(FOLDER_NAME)
