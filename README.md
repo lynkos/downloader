@@ -62,7 +62,7 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
       ```
       (dl_env) $
       ```
-   * If necessary, see which environments are available and/or currently active (active environment denoted with asterisk `(*)`)
+   * If necessary, see which environments are available and/or currently active (active environment denoted with asterisk `*`)
       ```
       conda info --envs
       ```
