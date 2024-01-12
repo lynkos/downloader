@@ -48,10 +48,6 @@ def connect(relative_path: str) -> Response:
         print(f"{BASE_URL}{relative_path} is invalid")
         raise SystemExit(error) from None
 
-    except exceptions.HTTPError as error:
-        print("HTTP error")
-        raise SystemExit(error) from None
-
     except exceptions.SSLError as error:
         print("SSL error")
         raise SystemExit(error) from None
