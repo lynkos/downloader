@@ -45,7 +45,7 @@ def connect(relative_path: str) -> Response:
         raise SystemExit(error) from None
 
     except exceptions.InvalidURL as error:
-        print(f"{BASE_URL}{relative_path} is invalid")
+        print(f"{BASE_URL}{relative_path} is not a valid URL")
         raise SystemExit(error) from None
 
     except exceptions.SSLError as error:
