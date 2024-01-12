@@ -1,5 +1,5 @@
-# downloader
-Simple python script to download certain files from given URL
+# Website File Downloader
+Simple python script to download certain files from specified URL
 
 ## Requirements
 - [x] [Anaconda](https://docs.continuum.io/free/anaconda/install) **OR** [Miniconda](https://docs.conda.io/projects/miniconda/en/latest)
