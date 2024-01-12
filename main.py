@@ -25,37 +25,37 @@ def connect(relative_path: str) -> Response | None:
         return get(f"{BASE_URL}{relative_path}", allow_redirects = True, stream = True, timeout = TIMEOUT)
 
     except exceptions.ConnectTimeout:
-        print(f"Request to {BASE_URL}{relative_path} timed out after {TIMEOUT} seconds\n")
+        print(f"Request to {BASE_URL}{relative_path} timed out after {TIMEOUT} seconds")
 
     except exceptions.ReadTimeout:
-        print(f"{BASE_URL}{relative_path} failed to send data within {TIMEOUT} seconds\n")
+        print(f"{BASE_URL}{relative_path} failed to send data within {TIMEOUT} seconds")
 
     except exceptions.TooManyRedirects:
-        print("Too many redirects\n")
+        print("Too many redirects")
 
     except exceptions.URLRequired:
-        print("URL is required to make a request\n")
+        print("URL is required to make a request")
 
     except exceptions.InvalidURL:
-        print(f"{BASE_URL}{relative_path} is not a valid URL\n")
+        print(f"{BASE_URL}{relative_path} is not a valid URL")
 
     except exceptions.HTTPError:
-        print("HTTP error\n")
+        print("HTTP error")
 
     except exceptions.SSLError:
-        print("SSL error\n")
+        print("SSL error")
 
     except exceptions.ProxyError:
-        print("Proxy error\n")
+        print("Proxy error")
 
     except exceptions.ConnectionError:
-        print("Connection error\n")
+        print("Connection error")
 
     except exceptions.RequestException:
-        print("Unable to handle request\n")
+        print("Unable to handle request")
 
     except Exception as error:
-        print(f"Error occurred: {error}\n")
+        print(f"Error occurred: {error}")
 
 def download(relative_path: str) -> None:
     """
