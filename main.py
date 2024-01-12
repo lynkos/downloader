@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup, Tag
 from requests import get, Response, exceptions
 from concurrent.futures import ProcessPoolExecutor
 from re import findall
-from os import path, getcwd
+from os import path, makedirs
+from time import time
 
 BASE_URL = "https://minecraft.wiki"
 URL_SUBDIRECTORY = "/w/Villager"
@@ -65,18 +66,18 @@ def connect(relative_path: str) -> Response:
         raise SystemExit(error) from None
 
     except exceptions.RequestException as error:
-        print(f"Unable to handle request")
+        print("Unable to handle request")
         raise SystemExit(error) from None
 
     except Exception as exception:
-        print(f"Error occurred: {exception}")
+        print("Error occurred:", exception)
         raise SystemExit(exception) from None
 
     return response
 
 def download(relative_path: str) -> None:
     """
-    Download file from {BASE_URL}{relative_path} and save to {FOLDER_NAME}{relative_path}
+    Download file from {BASE_URL}{relative_path} and save to {SAVE_FOLDER_NAME}{relative_path}
 
     Args:
         relative_path (str): Relative path (i.e. anything after {BASE_URL}) of file to download
@@ -84,7 +85,10 @@ def download(relative_path: str) -> None:
     response = connect(relative_path)
     
     if response.status_code == 200:
-        with open(path.join(getcwd(), SAVE_FOLDER_NAME, path.basename(relative_path)), "wb") as file:
+        if not path.isdir(SAVE_FOLDER_NAME):
+            makedirs(SAVE_FOLDER_NAME)
+
+        with open(path.join(SAVE_FOLDER_NAME, path.basename(relative_path)), "wb") as file:
             file.write(response.content)
 
 def find_path(html: Tag, extension: str = "") -> list[str]:
@@ -101,17 +105,24 @@ def find_path(html: Tag, extension: str = "") -> list[str]:
     return findall(rf"src=\"(.*?){extension}\"", str(html).strip())
 
 if __name__ == "__main__":
+    print("Starting script...\n")
     response = connect(URL_SUBDIRECTORY)
 
     if response.status_code == 200:
+        print(f"Successfully connected to \"{BASE_URL}{URL_SUBDIRECTORY}\"\n")
         relative_paths = [ ]
         
         for chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
             if find_path(chunk, FILE_EXTENSION):
                 relative_paths.append(find_path(chunk)[0])
 
+        start = time()
         with ProcessPoolExecutor() as executor:
+            print(f"Downloading all {FILE_EXTENSION} file(s)...\n")
             executor.map(download, relative_paths)
+        end = time()
+
+        print(f"Download(s) completed after {(end - start):.2f} second(s)")
 
     else:
         print("Failed to retrieve the webpage; status code:", response.status_code)
