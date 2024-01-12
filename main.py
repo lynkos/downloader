@@ -13,10 +13,10 @@ TIMEOUT = 10
 
 def connect(relative_path: str) -> Response:
     """
-    Connect to {BASE_URL}{relative_path}
+    Connect to `{BASE_URL}{relative_path}`
 
     Args:
-        relative_path (str): Relative path (i.e. anything after {BASE_URL}) of URL to connect to
+        relative_path (str): Relative path (i.e. anything after `{BASE_URL}`) of URL to connect to
         
     Raises:
         SystemExit: Exit from interpreter if a request exception/error occurs
@@ -72,10 +72,10 @@ def connect(relative_path: str) -> Response:
 
 def download(relative_path: str) -> None:
     """
-    Download file from {BASE_URL}{relative_path} and save to {FOLDER_NAME}{relative_path}
+    Download file from `{BASE_URL}{relative_path}` and save to `{FOLDER_NAME}{relative_path}`
 
     Args:
-        relative_path (str): Relative path (i.e. anything after {BASE_URL}) of file to download
+        relative_path (str): Relative path (i.e. anything after `{BASE_URL}`) of file to download
     """
     response = connect(relative_path)
     
@@ -88,14 +88,14 @@ def download(relative_path: str) -> None:
 
 def find_file_path(html: Tag, extension: str = "") -> list[str]:
     """
-    Find path(s) of desired file(s) within HTML src tags
+    Find path(s) of desired file(s) within HTML `src` tags
 
     Args:
         html (Tag): HTML to search
         extension (str, optional): File extension; defaults to empty string ""
 
     Returns:
-        list[str]: List of strings of file path(s) (with given extension, if applicable) within HTML src tags
+        list[str]: List of strings of file path(s) (with given extension, if applicable) within HTML `src` tags
     """
     return findall(rf"src=\"(.*?){extension}\"", str(html).strip())
 
