@@ -116,7 +116,7 @@ if __name__ == "__main__":
 
         start = time()
         with ProcessPoolExecutor() as executor:
-            print(f"Downloading .mp3 file(s) in {path.join(getcwd(), FOLDER_NAME)}\n")
+            print(f"Downloading .mp3 file(s) to {path.join(getcwd(), FOLDER_NAME)}\n")
             executor.map(download, relative_paths)
         end = time()
 
