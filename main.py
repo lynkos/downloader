@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup, Tag
-from requests import get, Response, exceptions
 from concurrent.futures import ProcessPoolExecutor
+from os import getcwd, makedirs, path
 from re import findall
-from os import getcwd, path, makedirs
+from requests import get, exceptions, Response
 from time import time
 
 BASE_URL: str = "https://minecraft.wiki"
