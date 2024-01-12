@@ -103,11 +103,11 @@ if __name__ == "__main__":
     print("Starting script...\n")
     start = perf_counter()
     
-    for url_subdirectory in URL_SUBDIRECTORIES:
-        response = connect(url_subdirectory)
+    for subdirectory in URL_SUBDIRECTORIES:
+        response = connect(subdirectory)
 
         if response.status_code == 200:
-            print(f"Successfully connected to {BASE_URL}{url_subdirectory}\n")
+            print(f"Successfully connected to {BASE_URL}{subdirectory}\n")
             relative_paths = [ ]
             
             for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
@@ -118,11 +118,11 @@ if __name__ == "__main__":
                 makedirs(FOLDER_NAME)
 
             with ProcessPoolExecutor() as executor:
-                print(f"Downloading .mp3 file(s) from {BASE_URL}{url_subdirectory} to {path.join(getcwd(), FOLDER_NAME)}\n")
+                print(f"Downloading .mp3 file(s) from {BASE_URL}{subdirectory} to {path.join(getcwd(), FOLDER_NAME)}\n")
                 executor.map(download, relative_paths)
 
         else:
-            print(f"Failed to connect to {BASE_URL}{url_subdirectory}\n")
+            print(f"Failed to connect to {BASE_URL}{subdirectory}\n")
             continue
 
     end = perf_counter()
