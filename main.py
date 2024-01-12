@@ -9,7 +9,6 @@ BASE_URL = "https://minecraft.wiki"
 URL_SUBDIRECTORY = "/w/Villager"
 FOLDER_NAME = "files"
 CSS_SELECTOR = "[data-title=\"MP3\"]"
-FILE_EXTENSION = ".mp3"
 TIMEOUT = 10
 
 def connect(relative_path: str) -> Response:
@@ -110,7 +109,7 @@ if __name__ == "__main__":
         relative_paths = [ ]
         
         for chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
-            if find_file_path(chunk, FILE_EXTENSION):
+            if find_file_path(chunk, ".mp3"):
                 relative_paths.append(find_file_path(chunk)[0])
 
         if not path.isdir(FOLDER_NAME):
@@ -118,7 +117,7 @@ if __name__ == "__main__":
 
         start = time()
         with ProcessPoolExecutor() as executor:
-            print(f"Downloading {FILE_EXTENSION} file(s) to {path.join(getcwd(), FOLDER_NAME)}\n")
+            print(f"Downloading .mp3 file(s) to {path.join(getcwd(), FOLDER_NAME)}\n")
             executor.map(download, relative_paths)
         end = time()
 
