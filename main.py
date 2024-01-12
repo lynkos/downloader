@@ -7,7 +7,7 @@ from time import time
 
 BASE_URL = "https://minecraft.wiki"
 URL_SUBDIRECTORY = "/w/Villager"
-SAVE_FOLDER_NAME = "files"
+FOLDER_NAME = "files"
 CSS_SELECTOR = "[data-title=\"MP3\"]"
 FILE_EXTENSION = ".mp3"
 TIMEOUT = 10
@@ -77,7 +77,7 @@ def connect(relative_path: str) -> Response:
 
 def download(relative_path: str) -> None:
     """
-    Download file from {BASE_URL}{relative_path} and save to {SAVE_FOLDER_NAME}{relative_path}
+    Download file from {BASE_URL}{relative_path} and save to {FOLDER_NAME}{relative_path}
 
     Args:
         relative_path (str): Relative path (i.e. anything after {BASE_URL}) of file to download
@@ -85,7 +85,7 @@ def download(relative_path: str) -> None:
     response = connect(relative_path)
     
     if response.status_code == 200:
-        with open(path.join(SAVE_FOLDER_NAME, path.basename(relative_path)), "wb") as file:
+        with open(path.join(FOLDER_NAME, path.basename(relative_path)), "wb") as file:
             file.write(response.content)
 
 def find_path(html: Tag, extension: str = "") -> list[str]:
@@ -113,12 +113,12 @@ if __name__ == "__main__":
             if find_path(chunk, FILE_EXTENSION):
                 relative_paths.append(find_path(chunk)[0])
 
-        if not path.isdir(SAVE_FOLDER_NAME):
-            makedirs(SAVE_FOLDER_NAME)
+        if not path.isdir(FOLDER_NAME):
+            makedirs(FOLDER_NAME)
 
         start = time()
         with ProcessPoolExecutor() as executor:
-            print(f"Downloading {FILE_EXTENSION} file(s) to {path.join(getcwd(), SAVE_FOLDER_NAME)}\n")
+            print(f"Downloading {FILE_EXTENSION} file(s) to {path.join(getcwd(), FOLDER_NAME)}\n")
             executor.map(download, relative_paths)
         end = time()
 
