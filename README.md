@@ -41,7 +41,7 @@ Simple python script to download `.mp3` files from [minecraft.wiki](https://mine
    ```
    conda update conda
    ```
-3. Enter the directory where you want the repository (`downloader`) to be cloned
+3. If necessary, enter the directory where you want the repository (`downloader`) to be cloned
    ```
    cd path/to/directory
    ```
