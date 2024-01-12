@@ -24,34 +24,34 @@ def connect(relative_path: str) -> Response | None:
     try:
         return get(f"{BASE_URL}{relative_path}", allow_redirects = True, stream = True, timeout = TIMEOUT)
 
-    except exceptions.ConnectTimeout as error:
+    except exceptions.ConnectTimeout:
         print(f"Request to {BASE_URL}{relative_path} timed out after {TIMEOUT} seconds\n")
 
-    except exceptions.ReadTimeout as error:
+    except exceptions.ReadTimeout:
         print(f"{BASE_URL}{relative_path} failed to send data within {TIMEOUT} seconds\n")
 
-    except exceptions.TooManyRedirects as error:
+    except exceptions.TooManyRedirects:
         print("Too many redirects\n")
 
-    except exceptions.URLRequired as error:
+    except exceptions.URLRequired:
         print("URL is required to make a request\n")
 
-    except exceptions.InvalidURL as error:
+    except exceptions.InvalidURL:
         print(f"{BASE_URL}{relative_path} is not a valid URL\n")
 
-    except exceptions.HTTPError as error:
+    except exceptions.HTTPError:
         print("HTTP error\n")
 
-    except exceptions.SSLError as error:
+    except exceptions.SSLError:
         print("SSL error\n")
 
-    except exceptions.ProxyError as error:
+    except exceptions.ProxyError:
         print("Proxy error\n")
 
-    except exceptions.ConnectionError as error:
+    except exceptions.ConnectionError:
         print("Connection error\n")
 
-    except exceptions.RequestException as error:
+    except exceptions.RequestException:
         print("Unable to handle request\n")
 
     except Exception as error:
