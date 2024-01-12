@@ -6,7 +6,7 @@ from requests import get, exceptions, Response
 from time import perf_counter
 
 BASE_URL: str = "https://minecraft.wiki"
-URL_SUBDIRECTORY: list[str] = [ "/w/Villager", "/w/Pillager" ]
+URL_SUBDIRECTORIES: list[str] = [ "/w/Villager", "/w/Pillager" ]
 FOLDER_NAME: str = "files"
 CSS_SELECTOR: str = "[data-title=\"MP3\"]"
 TIMEOUT: int = 10
@@ -103,11 +103,11 @@ if __name__ == "__main__":
     print("Starting script...\n")
     start = perf_counter()
     
-    for url in URL_SUBDIRECTORY:
-        response = connect(url)
+    for url_subdirectory in URL_SUBDIRECTORIES:
+        response = connect(url_subdirectory)
 
         if response.status_code == 200:
-            print(f"Successfully connected to {BASE_URL}{url}\n")
+            print(f"Successfully connected to {BASE_URL}{url_subdirectory}\n")
             relative_paths = [ ]
             
             for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
@@ -118,11 +118,11 @@ if __name__ == "__main__":
                 makedirs(FOLDER_NAME)
 
             with ProcessPoolExecutor() as executor:
-                print(f"Downloading .mp3 file(s) from {BASE_URL}{url} to {path.join(getcwd(), FOLDER_NAME)}\n")
+                print(f"Downloading .mp3 file(s) from {BASE_URL}{url_subdirectory} to {path.join(getcwd(), FOLDER_NAME)}\n")
                 executor.map(download, relative_paths)
 
         else:
-            print(f"Failed to connect to {BASE_URL}{url}\n")
+            print(f"Failed to connect to {BASE_URL}{url_subdirectory}\n")
             continue
 
     end = perf_counter()
