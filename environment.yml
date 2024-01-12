@@ -1,0 +1,9 @@
+name: script_env
+channels:
+  - defaults
+dependencies:
+  - python=3.12.0
+  - pip
+  - requests=2.31.0
+  - pip:
+    - beautifulsoup4==4.12.2
