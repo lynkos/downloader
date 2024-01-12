@@ -19,7 +19,7 @@ def connect(relative_path: str) -> Response | None:
         relative_path (str): Relative path (i.e. anything after `{BASE_URL}`) of URL to connect to
         
     Returns:
-        Response | None: HTTP request response (if applicable), else None
+        Response | None: HTTP request response if applicable, else None
     """
     try:
         return get(f"{BASE_URL}{relative_path}", allow_redirects = True, stream = True, timeout = TIMEOUT)
