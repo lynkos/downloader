@@ -1,5 +1,5 @@
 # Minecraft `.mp3` Downloader
-Simple python script to download `.mp3` files from [minecraft.wiki](https://minecraft.wiki)
+Simple Python script to download `.mp3` files from [minecraft.wiki](https://minecraft.wiki)
 
 ## Requirements
 - [x] [Anaconda](https://docs.continuum.io/free/anaconda/install) **OR** [Miniconda](https://docs.conda.io/projects/miniconda/en/latest)
