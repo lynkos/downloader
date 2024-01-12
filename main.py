@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup, Tag
 from requests import get, Response, exceptions
 from concurrent.futures import ProcessPoolExecutor
 from re import findall
-from os import path, makedirs
+from os import getcwd, path, makedirs
 from time import time
 
 BASE_URL = "https://minecraft.wiki"
@@ -85,9 +85,6 @@ def download(relative_path: str) -> None:
     response = connect(relative_path)
     
     if response.status_code == 200:
-        if not path.isdir(SAVE_FOLDER_NAME):
-            makedirs(SAVE_FOLDER_NAME)
-
         with open(path.join(SAVE_FOLDER_NAME, path.basename(relative_path)), "wb") as file:
             file.write(response.content)
 
@@ -109,16 +106,19 @@ if __name__ == "__main__":
     response = connect(URL_SUBDIRECTORY)
 
     if response.status_code == 200:
-        print(f"Successfully connected to \"{BASE_URL}{URL_SUBDIRECTORY}\"\n")
+        print(f"Successfully connected to {BASE_URL}{URL_SUBDIRECTORY}\n")
         relative_paths = [ ]
         
         for chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
             if find_path(chunk, FILE_EXTENSION):
                 relative_paths.append(find_path(chunk)[0])
 
+        if not path.isdir(SAVE_FOLDER_NAME):
+            makedirs(SAVE_FOLDER_NAME)
+
         start = time()
         with ProcessPoolExecutor() as executor:
-            print(f"Downloading all {FILE_EXTENSION} file(s)...\n")
+            print(f"Downloading {FILE_EXTENSION} file(s) to {path.join(getcwd(), SAVE_FOLDER_NAME)}\n")
             executor.map(download, relative_paths)
         end = time()
 
