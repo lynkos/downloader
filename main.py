@@ -101,8 +101,8 @@ def get_file_path(html: Tag, extension: str = "") -> str:
 
 if __name__ == "__main__":
     print("Starting script...\n")
-
     start = perf_counter()
+    
     for url in URL_SUBDIRECTORY:
         response = connect(url)
 
@@ -122,9 +122,8 @@ if __name__ == "__main__":
                 executor.map(download, relative_paths)
 
         else:
-            end = perf_counter()
-            print(f"Failed to connect to {BASE_URL}{url}... Status code: {response.status_code}, Total runtime: {(end - start):.2f} second(s)")
-            raise SystemExit(response.status_code) from None
+            print(f"Failed to connect to {BASE_URL}{url}")
+            continue
 
     end = perf_counter()
     print(f"Completed file download(s) in {(end - start):.2f} second(s)")
