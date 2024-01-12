@@ -92,7 +92,7 @@ def find_file_path(html: Tag, extension: str = "") -> list[str]:
     Find path(s) of desired file(s) within HTML src tags
 
     Args:
-        html (Tag): Chunk of HTML to search
+        html (Tag): HTML to search
         extension (str, optional): File extension; defaults to empty string ""
 
     Returns:
@@ -108,9 +108,9 @@ if __name__ == "__main__":
         print(f"Successfully connected to {BASE_URL}{URL_SUBDIRECTORY}\n")
         relative_paths = [ ]
         
-        for chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
-            if find_file_path(chunk, ".mp3"):
-                relative_paths.append(find_file_path(chunk)[0])
+        for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
+            if find_file_path(html_chunk, ".mp3"):
+                relative_paths.append(find_file_path(html_chunk)[0])
 
         if not path.isdir(FOLDER_NAME):
             makedirs(FOLDER_NAME)

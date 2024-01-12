@@ -1,5 +1,5 @@
-# Minecraft .mp3 Downloader
-Simple python script to download .mp3 files from Minecraft wiki
+# Minecraft `.mp3` Downloader
+Simple python script to download `.mp3` files from [minecraft.wiki](https://minecraft.wiki)
 
 ## Requirements
 - [x] [Anaconda](https://docs.continuum.io/free/anaconda/install) **OR** [Miniconda](https://docs.conda.io/projects/miniconda/en/latest)
@@ -42,14 +42,9 @@ Simple python script to download .mp3 files from Minecraft wiki
    conda update conda
    ```
 3. Enter the directory where you want the repository (`downloader`) to be cloned
-     * Unix
-       ```
-       cd ~/relative/path/to/directory
-       ```
-     * Windows
-       ```
-       cd absolute\path\to\directory
-       ```
+   ```
+   cd path_to_directory
+   ```
 4. Clone the repository (`downloader`), then enter its directory
    ```
    git clone https://github.com/lynkos/downloader && cd downloader
@@ -63,18 +58,18 @@ Simple python script to download .mp3 files from Minecraft wiki
    conda activate dl_env
    ```
 7. Confirm that the virtual environment (`dl_env`) is active
-     * If active, the virtual environment's name should be in parentheses () or brackets [] before your command prompt, e.g.
-       ```
-       (dl_env) $
-       ```
-     * If necessary, see which environments are available and/or currently active (active environment denoted with asterisk (*))
-       ```
-       conda info --envs
-       ```
-       **OR**
-       ```
-       conda env list
-       ```
+   * If active, the virtual environment's name should be in parentheses `()` or brackets `[]` before your command prompt, e.g.
+      ```
+      (dl_env) $
+      ```
+   * If necessary, see which environments are available and/or currently active (active environment denoted with asterisk `(*)`)
+      ```
+      conda info --envs
+      ```
+      **OR**
+      ```
+      conda env list
+      ```
 
 ## Usage
 ### Command Line
