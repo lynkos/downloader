@@ -120,7 +120,7 @@ if __name__ == "__main__":
             executor.map(download, relative_paths)
         end = time()
 
-        print(f"Download(s) completed after {(end - start):.2f} second(s)")
+        print(f"Completed file download(s) in {(end - start):.2f} second(s)")
 
     else:
         print("Failed to retrieve the webpage... Status code:", response.status_code)
