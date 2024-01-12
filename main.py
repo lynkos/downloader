@@ -5,11 +5,11 @@ from re import findall
 from os import getcwd, path, makedirs
 from time import time
 
-BASE_URL = "https://minecraft.wiki"
-URL_SUBDIRECTORY = "/w/Villager"
-FOLDER_NAME = "files"
-CSS_SELECTOR = "[data-title=\"MP3\"]"
-TIMEOUT = 10
+BASE_URL: str = "https://minecraft.wiki"
+URL_SUBDIRECTORY: str = "/w/Villager"
+FOLDER_NAME: str = "files"
+CSS_SELECTOR: str = "[data-title=\"MP3\"]"
+TIMEOUT: int = 10
 
 def connect(relative_path: str) -> Response:
     """
