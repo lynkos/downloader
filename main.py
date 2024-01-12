@@ -64,9 +64,9 @@ def connect(relative_path: str) -> Response:
         print("Unable to handle request")
         raise SystemExit(error) from None
 
-    except Exception as exception:
-        print("Error occurred:", exception)
-        raise SystemExit(exception) from None
+    except Exception as error:
+        print("Error occurred:", error)
+        raise SystemExit(error) from None
 
     return response
 
