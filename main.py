@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup, ResultSet
+from bs4 import BeautifulSoup, Tag
 from requests import get, Response, exceptions
 from concurrent.futures import ProcessPoolExecutor
 from re import findall
@@ -68,7 +68,7 @@ def connect(relative_path: str) -> Response:
         print(f"Unable to handle request")
         raise SystemExit(error) from None
 
-    except error as exception:
+    except Exception as exception:
         print(f"Error occurred: {exception}")
         raise SystemExit(exception) from None
 
@@ -87,12 +87,12 @@ def download(relative_path: str) -> None:
         with open(path.join(getcwd(), SAVE_FOLDER_NAME, path.basename(relative_path)), "wb") as file:
             file.write(response.content)
 
-def find_path(html: ResultSet, extension: str = "") -> list[str]:
+def find_path(html: Tag, extension: str = "") -> list[str]:
     """
     Find path(s) of desired file(s) within HTML src tags
 
     Args:
-        html (ResultSet): Chunk of HTML to search
+        html (Tag): Chunk of HTML to search
         extension (str, optional): File extension; defaults to empty string ""
 
     Returns:
