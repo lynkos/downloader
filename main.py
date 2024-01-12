@@ -7,7 +7,7 @@ from time import perf_counter
 from urllib.parse import urljoin
 
 BASE_URL: str = "https://minecraft.wiki"
-RELATIVE_URLS: list[str] = [ "/w/Villager", "/w/Pillager" ]
+RELATIVE_URLS: list[str] = [ "/w/Villager", "/w/Pillager", "/w/Minecraft_Dungeons:Mage" ]
 FOLDER_NAME: str = "files"
 CSS_SELECTOR: str = "[data-title=\"MP3\"]"
 TIMEOUT: int = 10
@@ -102,7 +102,7 @@ def absolute_url(url: str) -> str:
 
     return urljoin(BASE_URL, url)
 
-def work(url: str) -> None:
+def worker(url: str) -> None:
     """
     Get URL(s) of .mp3 file(s) from `{url}` and download to `{FOLDER_NAME}`
 
@@ -125,7 +125,7 @@ def work(url: str) -> None:
 
     else:
         print(f"Failed to connect to {url}\n")
-    
+
 if __name__ == "__main__":
     print("Starting script...\n")
     start = perf_counter()
@@ -134,7 +134,7 @@ if __name__ == "__main__":
         makedirs(FOLDER_NAME)
 
     for relative_url in RELATIVE_URLS:
-        work(absolute_url(relative_url))
+        worker(absolute_url(relative_url))
 
     if not listdir(FOLDER_NAME): 
         rmdir(FOLDER_NAME)
