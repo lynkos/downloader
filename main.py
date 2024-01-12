@@ -122,7 +122,7 @@ if __name__ == "__main__":
                 executor.map(download, relative_paths)
 
         else:
-            print(f"Failed to connect to {BASE_URL}{url}")
+            print(f"Failed to connect to {BASE_URL}{url}\n")
             continue
 
     end = perf_counter()
