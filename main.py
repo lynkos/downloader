@@ -4,18 +4,25 @@ from os import getcwd, listdir, makedirs, path, rmdir
 from re import findall
 from requests import get, exceptions, Response
 from time import perf_counter
-from typing import Annotated
 from urllib.parse import urljoin
 
-"""Feel free to modify these variables"""
-BASE_URL: Annotated[str, "Base URL"] = "https://minecraft.wiki"
-RELATIVE_URLS: Annotated[list[str], "Relative URLs of pages to download from"] = [ "/w/Villager", "/w/Pillager", "/w/Minecraft_Dungeons:Mage" ]
-FOLDER_NAME: Annotated[str, "Name of folder to save downloads to"] = "minecraft_downloads"
-TIMEOUT: Annotated[int, "Number of seconds till request times out"] = 10
+BASE_URL: str = "https://minecraft.wiki"
+"""Base URL"""
 
-"""Please do not modify these variables, unless you know what you're doing"""
-FOLDER_PATH: Annotated[str, "Absolute path of folder to save downloads to"] = path.join(getcwd(), FOLDER_NAME)
-CSS_SELECTOR: Annotated[str, "Pattern to select certain HTML element(s)"] = "[data-title=\"MP3\"]"
+RELATIVE_URLS: list[str] = [ "/w/Villager", "/w/Pillager", "/w/Minecraft_Dungeons:Mage" ]
+"""Relative URL(s) of page(s) to download from"""
+
+FOLDER_NAME: str = "minecraft_downloads"
+"""Name of folder to save downloads to"""
+
+FOLDER_PATH: str = path.join(getcwd(), FOLDER_NAME)
+"""Absolute path of folder to save downloads to"""
+
+CSS_SELECTOR: str = "[data-title=\"MP3\"]"
+"""Pattern used to select certain HTML element(s)"""
+
+TIMEOUT: int = 10
+"""Number of seconds till request times out"""
 
 def connect(url: str) -> Response | None:
     """
