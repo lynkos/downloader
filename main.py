@@ -7,10 +7,10 @@ from time import perf_counter
 from urllib.parse import urljoin
 
 BASE_URL: str = "https://minecraft.wiki"
-"""Base URL of page(s) to download from"""
+"""Website to download from"""
 
 RELATIVE_URLS: list[str] = [ "/w/Villager", "/w/Pillager", "/w/Minecraft_Dungeons:Mage" ]
-"""Relative URL(s) (i.e. anything after {BASE_URL}) of page(s) to download from"""
+"""Relative URL(s) (i.e. anything after {BASE_URL}) of web page(s) to download from"""
 
 FOLDER_NAME: str = "minecraft_downloads"
 """Name of folder to save downloads to"""
@@ -67,46 +67,46 @@ def connect(url: str) -> Response | None:
     except Exception as error:
         print(f"Unexpected error while connecting to {url} ({error})")
 
-def download(url: str) -> None:
+def download(file_url: str) -> None:
     """
-    Download file from `{url}`
+    Download file from `{file_url}`
 
     Args:
-        url (str): URL of file to download
+        file_url (str): URL of file to download
     """
-    response = connect(url)
+    response = connect(file_url)
     
     if response and response.status_code == 200:         
         try:
-            with open(path.join(FOLDER_PATH, path.basename(url)), "wb") as file:
+            with open(path.join(FOLDER_PATH, path.basename(file_url)), "wb") as file:
                 file.write(response.content)
 
         except ChildProcessError:
-            print(f"Child process error while downloading {url}\n")
+            print(f"Child process error while downloading {file_url}\n")
 
         except InterruptedError:
-            print(f"Interrupted while downloading {url}\n")
+            print(f"Interrupted while downloading {file_url}\n")
 
         except ProcessLookupError:
-            print(f"Process lookup error while downloading {url}\n")
+            print(f"Process lookup error while downloading {file_url}\n")
 
         except MemoryError:
-            print(f"Memory error while downloading {url}\n")
+            print(f"Memory error while downloading {file_url}\n")
 
         except TimeoutError:
-            print(f"Timeout error while downloading {url}\n")
+            print(f"Timeout error while downloading {file_url}\n")
 
         except PermissionError:
-            print(f"Permission error while downloading {url}\n")
+            print(f"Permission error while downloading {file_url}\n")
 
         except (IOError, OSError):
-            print(f"I/O error while downloading {url}\n")
+            print(f"I/O error while downloading {file_url}\n")
 
         except Exception as error:
-            print(f"Unexpected error while downloading {url} ({error})\n")
+            print(f"Unexpected error while downloading {file_url} ({error})\n")
 
     else:
-        print(f"Failed to connect to {url}\n")
+        print(f"Failed to connect to {file_url}\n")
 
 def get_file_url(html: Tag, extension: str = "") -> str:
     """
@@ -114,7 +114,7 @@ def get_file_url(html: Tag, extension: str = "") -> str:
 
     Args:
         html (Tag): HTML to search
-        extension (str, optional): File extension; defaults to empty string ""
+        extension (str, optional): File extension; defaults to empty string
 
     Returns:
         str: File URL
@@ -133,27 +133,27 @@ def absolute_url(url: str) -> str:
     """
     return urljoin(BASE_URL, url)
 
-def work(url: str) -> None:
+def work(web_page: str) -> None:
     """
-    Get URL(s) of .mp3 file(s) from `{url}` and download to `{FOLDER_PATH}`
+    Download all .mp3 file(s) from `{web_page}` to `{FOLDER_PATH}`
 
     Args:
-        url (str): URL of file(s) to download
+        web_page (str): URL of web page containing file(s) to download
     """
-    response = connect(url)
+    response = connect(web_page)
 
     if response and response.status_code == 200:
-        print(f"Successfully connected to {url}\n")
+        print(f"Successfully connected to {web_page}\n")
         
         with ProcessPoolExecutor() as executor:
-            print(f"Attempting to download .mp3 file(s) from {url} to {FOLDER_PATH}\n")
+            print(f"Attempting to download .mp3 file(s) from {web_page} to {FOLDER_PATH}\n")
             
             for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
                 if get_file_url(html_chunk, ".mp3"):
                     executor.submit(download, get_file_url(html_chunk))
 
     else:
-        print(f"Failed to connect to {url}\n")
+        print(f"Failed to connect to {web_page}\n")
 
 if __name__ == "__main__":
     print("Starting script...\n")
