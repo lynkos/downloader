@@ -7,10 +7,10 @@ from time import perf_counter
 from urllib.parse import urljoin
 
 BASE_URL: str = "https://minecraft.wiki"
-"""Base URL"""
+"""Base URL of page(s) to download from"""
 
 RELATIVE_URLS: list[str] = [ "/w/Villager", "/w/Pillager", "/w/Minecraft_Dungeons:Mage" ]
-"""Relative URL(s) of page(s) to download from"""
+"""Relative URL(s) (i.e. anything after {BASE_URL}) of page(s) to download from"""
 
 FOLDER_NAME: str = "minecraft_downloads"
 """Name of folder to save downloads to"""
