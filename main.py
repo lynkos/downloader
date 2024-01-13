@@ -10,7 +10,7 @@ BASE_URL: str = "https://minecraft.wiki"
 """Website to download from"""
 
 RELATIVE_URLS: list[str] = [ "/w/Villager", "/w/Pillager", "/w/Minecraft_Dungeons:Mage" ]
-"""Relative URL(s) (i.e. anything after {BASE_URL}) of web page(s) to download from"""
+"""Relative URL(s) (i.e. anything after `BASE_URL`) of web page(s) to download from"""
 
 FOLDER_NAME: str = "minecraft_downloads"
 """Name of folder to save downloads to"""
@@ -26,14 +26,14 @@ TIMEOUT: int = 10
 
 def connect(url: str) -> Response | None:
     """
-    Connect to `{url}`
+    Connect to URL
 
     Args:
         url (str): URL to connect to
         
     Returns:
         Response | None: HTTP request response if applicable, else None
-    """
+    """    
     try:
         return get(url, allow_redirects = True, stream = True, timeout = TIMEOUT)
 
@@ -69,7 +69,7 @@ def connect(url: str) -> Response | None:
 
 def download(file_url: str) -> None:
     """
-    Download file from `{file_url}`
+    Save file to `FOLDER_PATH`
 
     Args:
         file_url (str): URL of file to download
@@ -108,25 +108,25 @@ def download(file_url: str) -> None:
     else:
         print(f"Failed to connect to {file_url}\n")
 
-def get_file_url(html: Tag, extension: str = "") -> str:
+def get_url(html: Tag, extension: str = "") -> str:
     """
-    Extract file URL (with given extension, if applicable) from HTML `src` tag
+    Get URL from HTML tag
 
     Args:
-        html (Tag): HTML to search
+        html (Tag): HTML tag to search
         extension (str, optional): File extension; defaults to empty string
 
     Returns:
-        str: File URL
+        str: URL in HTML tag
     """
-    return absolute_url(findall(rf"src=\"(.*?){extension}\"", str(html).strip())[0])
+    return findall(rf"src=\"(.*?){extension}\"", str(html).strip())[0]
 
 def absolute_url(url: str) -> str:
     """
     Convert URL to absolute URL
 
     Args:
-        url (str): URL
+        url (str): URL to convert
 
     Returns:
         str: Absolute URL
@@ -135,7 +135,7 @@ def absolute_url(url: str) -> str:
 
 def work(web_page: str) -> None:
     """
-    Download all .mp3 file(s) from `{web_page}` to `{FOLDER_PATH}`
+    Download all .mp3 file(s) from web page to `FOLDER_PATH`
 
     Args:
         web_page (str): URL of web page containing file(s) to download
@@ -148,9 +148,9 @@ def work(web_page: str) -> None:
         with ProcessPoolExecutor() as executor:
             print(f"Attempting to download .mp3 file(s) from {web_page} to {FOLDER_PATH}\n")
             
-            for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
-                if get_file_url(html_chunk, ".mp3"):
-                    executor.submit(download, get_file_url(html_chunk))
+            for html_tag in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
+                if get_url(html_tag, ".mp3"):
+                    executor.submit(download, absolute_url(get_url(html_tag)))
 
     else:
         print(f"Failed to connect to {web_page}\n")
