@@ -4,13 +4,18 @@ from os import getcwd, listdir, makedirs, path, rmdir
 from re import findall
 from requests import get, exceptions, Response
 from time import perf_counter
+from typing import Annotated
 from urllib.parse import urljoin
 
-BASE_URL: str = "https://minecraft.wiki"
-RELATIVE_URLS: list[str] = [ "/w/Villager", "/w/Pillager", "/w/Minecraft_Dungeons:Mage" ]
-FOLDER_NAME: str = "files"
-CSS_SELECTOR: str = "[data-title=\"MP3\"]"
-TIMEOUT: int = 10
+"""Feel free to modify these variables"""
+BASE_URL: Annotated[str, "Base URL"] = "https://minecraft.wiki"
+RELATIVE_URLS: Annotated[list[str], "Relative URLs of pages to download from"] = [ "/w/Villager", "/w/Pillager", "/w/Minecraft_Dungeons:Mage" ]
+FOLDER_NAME: Annotated[str, "Name of folder to save downloads to"] = "minecraft_downloads"
+TIMEOUT: Annotated[int, "Number of seconds till request times out"] = 10
+
+"""Please do not modify these variables, unless you know what you're doing"""
+FOLDER_PATH: Annotated[str, "Absolute path of folder to save downloads to"] = path.join(getcwd(), FOLDER_NAME)
+CSS_SELECTOR: Annotated[str, "Pattern to select certain HTML element(s)"] = "[data-title=\"MP3\"]"
 
 def connect(url: str) -> Response | None:
     """
@@ -32,31 +37,28 @@ def connect(url: str) -> Response | None:
         print(f"{url} failed to send data within {TIMEOUT} seconds")
 
     except exceptions.TooManyRedirects:
-        print("Too many redirects")
+        print(f"{url} has too many redirects")
 
-    except exceptions.URLRequired:
-        print("URL is required to make a request")
-
-    except exceptions.InvalidURL:
+    except (exceptions.URLRequired, exceptions.InvalidURL):
         print(f"{url} is not a valid URL")
 
     except exceptions.HTTPError:
-        print("HTTP error")
+        print(f"HTTP error while connecting to {url}")
 
     except exceptions.SSLError:
-        print("SSL error")
+        print(f"SSL error while connecting to {url}")
 
     except exceptions.ProxyError:
-        print("Proxy error")
+        print(f"Proxy error while connecting to {url}")
 
     except exceptions.ConnectionError:
-        print("Connection error")
+        print(f"Connection error while connecting to {url}")
 
     except exceptions.RequestException:
-        print("Unable to handle request")
+        print(f"Unable to handle request to {url}")
 
     except Exception as error:
-        print(f"Error occurred: {error}")
+        print(f"Unexpected error while connecting to {url} ({error})")
 
 def download(url: str) -> None:
     """
@@ -67,12 +69,37 @@ def download(url: str) -> None:
     """
     response = connect(url)
     
-    if response and response.status_code == 200:
-        with open(path.join(FOLDER_NAME, path.basename(url)), "wb") as file:
-            file.write(response.content)
+    if response and response.status_code == 200:         
+        try:
+            with open(path.join(FOLDER_PATH, path.basename(url)), "wb") as file:
+                file.write(response.content)
+
+        except ChildProcessError:
+            print(f"Child process error while downloading {url}\n")
+
+        except InterruptedError:
+            print(f"Interrupted while downloading {url}\n")
+
+        except ProcessLookupError:
+            print(f"Process lookup error while downloading {url}\n")
+
+        except MemoryError:
+            print(f"Memory error while downloading {url}\n")
+
+        except TimeoutError:
+            print(f"Timeout error while downloading {url}\n")
+
+        except PermissionError:
+            print(f"Permission error while downloading {url}\n")
+
+        except (IOError, OSError):
+            print(f"I/O error while downloading {url}\n")
+
+        except Exception as error:
+            print(f"Unexpected error while downloading {url} ({error})\n")
 
     else:
-        print(f"Failed to download file from {url}\n")
+        print(f"Failed to connect to {url}\n")
 
 def get_file_url(html: Tag, extension: str = "") -> str:
     """
@@ -97,14 +124,11 @@ def absolute_url(url: str) -> str:
     Returns:
         str: Absolute URL
     """
-    if url.startswith(("https://", "http://", "www.")):
-        return url
-
     return urljoin(BASE_URL, url)
 
-def worker(url: str) -> None:
+def work(url: str) -> None:
     """
-    Get URL(s) of .mp3 file(s) from `{url}` and download to `{FOLDER_NAME}`
+    Get URL(s) of .mp3 file(s) from `{url}` and download to `{FOLDER_PATH}`
 
     Args:
         url (str): URL of file(s) to download
@@ -113,15 +137,13 @@ def worker(url: str) -> None:
 
     if response and response.status_code == 200:
         print(f"Successfully connected to {url}\n")
-        file_urls = [ ]
         
-        for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
-            if get_file_url(html_chunk, ".mp3"):
-                file_urls.append(get_file_url(html_chunk))
-
         with ProcessPoolExecutor() as executor:
-            print(f"Downloading .mp3 file(s) from {url} to {path.join(getcwd(), FOLDER_NAME)}\n")
-            executor.map(download, file_urls)
+            print(f"Attempting to download .mp3 file(s) from {url} to {FOLDER_PATH}\n")
+            
+            for html_chunk in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
+                if get_file_url(html_chunk, ".mp3"):
+                    executor.submit(download, get_file_url(html_chunk))
 
     else:
         print(f"Failed to connect to {url}\n")
@@ -130,14 +152,14 @@ if __name__ == "__main__":
     print("Starting script...\n")
     start = perf_counter()
 
-    if not path.isdir(FOLDER_NAME):
-        makedirs(FOLDER_NAME)
+    if not path.isdir(FOLDER_PATH):
+        makedirs(FOLDER_PATH)
 
     for relative_url in RELATIVE_URLS:
-        worker(absolute_url(relative_url))
+        work(absolute_url(relative_url))
 
-    if not listdir(FOLDER_NAME): 
-        rmdir(FOLDER_NAME)
+    if not listdir(FOLDER_PATH): 
+        rmdir(FOLDER_PATH)
 
     end = perf_counter()
     print(f"Total runtime: {(end - start):.2f} second(s)")
