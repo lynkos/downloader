@@ -152,6 +152,8 @@ def work(web_page: str) -> None:
                 if get_url(html_tag, ".mp3"):
                     executor.submit(download, absolute_url(get_url(html_tag)))
 
+        print(f"Completed downloads from {web_page} to {FOLDER_PATH}\n")
+
     else:
         print(f"Failed to connect to {web_page}\n")
 
