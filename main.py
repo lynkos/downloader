@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup, Tag
 from concurrent.futures import ProcessPoolExecutor
-from os import getcwd, listdir, makedirs, path, rmdir
+from os import getcwd, get_terminal_size, listdir, makedirs, path, rmdir
 from re import findall
 from requests import get, exceptions, Response
 from time import perf_counter
@@ -165,10 +165,12 @@ if __name__ == "__main__":
         makedirs(FOLDER_PATH)
 
     for relative_url in RELATIVE_URLS:
+        print(f"{"=" * get_terminal_size().columns}\n")
         work(absolute_url(relative_url))
 
     if not listdir(FOLDER_PATH): 
         rmdir(FOLDER_PATH)
 
     end = perf_counter()
+    print(f"{"=" * get_terminal_size().columns}\n")
     print(f"Total runtime: {(end - start):.2f} second(s)")
