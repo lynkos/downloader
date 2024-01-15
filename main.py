@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup, Tag
 from concurrent.futures import ProcessPoolExecutor
-from os import getcwd, get_terminal_size, listdir, makedirs, path, rmdir
+from os import getcwd, listdir, makedirs, path, rmdir
 from re import findall
 from requests import get, exceptions, Response
+from shutil import get_terminal_size
 from time import perf_counter
 from urllib.parse import urljoin
 
