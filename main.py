@@ -150,7 +150,7 @@ def work(web_page: str) -> None:
             print(f"Attempting to download .mp3 file(s) from {web_page} to {FOLDER_PATH}\n")
             
             for html_tag in BeautifulSoup(response.text, "html.parser").select(CSS_SELECTOR):
-                if get_url(html_tag, ".mp3"):
+                if get_url(html_tag, ".mp3"):                    
                     executor.submit(download, absolute_url(get_url(html_tag)))
 
         print(f"Completed download(s) from {web_page} to {FOLDER_PATH}\n")
