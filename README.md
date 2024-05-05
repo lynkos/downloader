@@ -60,7 +60,7 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
    ```sh
    git clone https://github.com/lynkos/downloader && cd downloader
    ```
-6. Create a conda virtual environment from `environment.yml`
+6. Create a conda virtual environment from [`environment.yml`](environment.yml)
    ```
    conda env create -f environment.yml
    ```
@@ -84,7 +84,7 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
 
 ## Usage
 ### Terminal
-1. Run `dl.py`
+1. Run [`dl.py`](dl.py)
    ```
    python dl.py
    ```
@@ -105,9 +105,9 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
       ```
 2. Search and select `Python: Select Interpreter`
 3. Select the virtual environment (`dl_env`)
-4. Open `dl.py`
-5. Run `dl.py` by clicking `▷` (i.e. `Play` button) in the upper-right corner
-6. Deactivate the virtual environment (`dl_env`) when you're finished
+4. Open [`dl.py`](dl.py)
+5. Run [`dl.py`](dl.py) by clicking `▷` (i.e. `Play` button) in the upper-right corner
+6. Deactivate virtual environment (`dl_env`) when finished
    ```
    conda deactivate
    ```
