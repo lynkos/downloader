@@ -18,6 +18,10 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
 >    <td>Familiar with conda and/or Python</td>
 >   </tr>
 >   <tr>
+>    <td>Not familiar with using terminal and prefer GUI</td>
+>    <td>Comfortable using terminal</td>
+>   </tr>
+>   <tr>
 >    <td>Like the convenience of having Python and 1,500+ scientific packages automatically installed at once</td>
 >    <td>Want fast access to Python and the conda commands and plan to sort out the other programs later</td>
 >   </tr>
@@ -31,6 +35,22 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
 >   </tr>
 >  </tbody>
 > </table>
+>
+> Typing out entire Conda commands can sometimes be tedious, so I wrote a shell script ([`conda_shortcuts.sh` on GitHub Gist](https://gist.github.com/lynkos/7a4ce7f9e38bb56174360648461a3dc8)) to define shortcuts for commonly used Conda commands.
+> <details>
+>   <summary>Example: Delete/remove a conda environment named <code>test_env</code></summary>
+>
+> * Shortcut command
+>     ```
+>     rmenv test_env
+>     ```
+> * Manually typing out the entire command
+>     ```sh
+>     conda env remove -n test_env && rm -rf $(conda info --base)/envs/test_env
+>     ```
+>
+> The shortcut has 80.8% fewer characters!
+> </details>
 
 ## Installation
 1. Open terminal
@@ -111,79 +131,3 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
    ```
    conda deactivate
    ```
-
-## [Optional] Conda Shortcut Commands
-> [!TIP]
-> Instead of manually typing out entire conda commands, you can save time with shortcuts.
-> 
-> Add [`conda_shortcuts.sh`](conda_shortcuts.sh) then source shell startup file (e.g., `.bashrc`) or restart terminal to apply changes.
-> * POSIX
->   ```sh
->   cat conda_shortcuts.sh >> ~/.bashrc
->   source ~/.bashrc
->   ```
-> * Windows
->   ```sh
->   type conda_shortcuts.sh >> C:\Users\user\path\to\.bashrc
->   source C:\Users\user\path\to\.bashrc
->   ```
-
-<table>
-   <thead>
-     <tr>
-       <th><center>Command</center></th>
-       <th><center>Description</center></th>
-       <th><center>Usage</center></th>
-     </tr>
-   </thead>
-   <tbody>
-     <tr>
-       <td align="center"><a target="_blank" href="conda_shortcuts.sh#L94"><code>act</code></a></td>
-       <td align="center">Activate conda environment</td>
-       <td><p><pre>act [env_name]</pre></p></td>
-     </tr>
-     <tr>
-       <td align="center"><a target="_blank" href="conda_shortcuts.sh#L3"><code>dac</code></a></td>
-       <td align="center">Deactivate conda environment</td>
-       <td><p><pre>dac</pre></p></td>
-     </tr>
-     <tr>
-       <td align="center" rowspan="2"><a target="_blank" href="conda_shortcuts.sh#L21"><code>mkenv</code></a></td>
-       <td rowspan="2" align="center">Create conda environment(s)</td>
-       <td><p><pre>mkenv [yaml_file1] [yaml_file2] ... [yaml_fileN]</pre></p></td>
-     </tr>
-     <tr>
-       <td><p><pre>mkenv [env_name] [package1] [package2] ... [packageN]</pre></p></td>
-     </tr>
-     <tr>
-       <td align="center"><a target="_blank" href="conda_shortcuts.sh#L47"><code>rmenv</code></a></td>
-       <td align="center">Remove conda environment(s)</td>
-       <td><p><pre>rmenv [env1] [env2] ... [envN]</pre></p></td>
-     </tr>
-     <tr>
-       <td align="center"><a target="_blank" href="conda_shortcuts.sh#L61"><code>rnenv</code></a></td>
-       <td align="center">Rename conda environment</td>
-       <td><p><pre>rnenv [curr_name] [new_name]</pre></p></td>
-     </tr>
-     <tr>
-       <td align="center"><a target="_blank" href="conda_shortcuts.sh#L81"><code>cpenv</code></a></td>
-       <td align="center">Copy conda environment</td>
-       <td><p><pre>cpenv [env_name] [copy's_name]</pre></p></td>
-     </tr>
-     <tr>
-       <td align="center"><a target="_blank" href="conda_shortcuts.sh#L108"><code>exp</code></a></td>
-       <td align="center">Export conda environment</td>
-       <td><p><pre>exp [out_file]</pre></p></td>
-     </tr>
-     <tr>
-       <td align="center"><a target="_blank" href="conda_shortcuts.sh#L132"><code>lsenv</code></a></td>
-       <td align="center">List conda environment</td>
-       <td><p><pre>lsenv</pre></p></td>
-     </tr>
-   </tbody>
-</table>
-
-> [!WARNING]
-> Conda shortcut commands have **ONLY** been tested on `bash v5.2.26(1)-release` with `aarch64-apple-darwin23.2.0` architecture, so — just to be safe — test and make changes as needed.
-> 
-> E.g., [`rmenv`](conda_shortcuts.sh#L47) assumes the path delimeter is forward slash `/` (POSIX systems); if you use Windows (path delimeter is backslash `\`), replace forward slashes `/` in [`env_path`](conda_shortcuts.sh#L50) with backslashes `\`.
