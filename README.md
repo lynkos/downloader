@@ -1,5 +1,6 @@
-# Minecraft `.mp3` Downloader
-Simple Python script to download `.mp3` files from [minecraft.wiki](https://minecraft.wiki)
+# Downloader
+Simple Python script to download images and mp3 files from websites using `requests` and `BeautifulSoup`.
+Downloaded images can be concatenated and saved as a single pdf or image.
 
 ## Requirements
 - [x] [Anaconda](https://docs.continuum.io/free/anaconda/install) **OR** [Miniconda](https://docs.conda.io/projects/miniconda/en/latest)
@@ -104,10 +105,15 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
 
 ## Usage
 ### Terminal
-1. Run [`dl.py`](dl.py)
-   ```
-   python dl.py
-   ```
+1. Run downloader(s)
+   * [`ImageDownloader.py`](src/ImageDownloader.py)
+     ```
+     python src/ImageDownloader.py
+     ```
+   * [`MP3Downloader.py`](src/MP3Downloader.py)
+     ```
+     python src/MP3Downloader.py
+     ```
 2. Deactivate virtual environment (`dl_env`) when finished
    ```
    conda deactivate
@@ -125,8 +131,8 @@ Simple Python script to download `.mp3` files from [minecraft.wiki](https://mine
       ```
 2. Search and select `Python: Select Interpreter`
 3. Select the virtual environment (`dl_env`)
-4. Open [`dl.py`](dl.py)
-5. Run [`dl.py`](dl.py) by clicking `▷` (i.e. `Play` button) in the upper-right corner
+4. Open [`ImageDownloader.py`](src/ImageDownloader.py) or [`MP3Downloader.py`](src/MP3Downloader.py)
+5. Run file by clicking `▷` (i.e. `Play` button) in the upper-right corner
 6. Deactivate virtual environment (`dl_env`) when finished
    ```
    conda deactivate
