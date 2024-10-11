@@ -1,6 +1,9 @@
-# Downloader
-Simple Python script to download images and mp3 files from websites using `requests` and `BeautifulSoup`.
-Downloaded images can be concatenated and saved as a single pdf or image.
+# Basic Web Scraper
+Python script to download images and mp3 files from [some] websites.
+
+Downloaded images can be concatenated and saved as a single pdf or a(n) [vertically stacked] image; useful for downloading manga, comics, etc.
+
+(Fun Fact: This project was originally created to help someone else download mp3 files from Minecraft wiki!)
 
 ## Requirements
 - [x] [Anaconda](https://docs.continuum.io/free/anaconda/install) **OR** [Miniconda](https://docs.conda.io/projects/miniconda/en/latest)
