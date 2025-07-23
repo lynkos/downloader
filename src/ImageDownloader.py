@@ -2,6 +2,7 @@
 Download images from web page(s) and save them as .pdf or concatenate them into a single image
 """
 from Downloader import Downloader, IGNORE, SAVE_PATH, URL_FILENAME
+from io import BytesIO
 from os import listdir
 from os.path import basename, isdir, join 
 from PIL.Image import Image, new, open as open_img
@@ -84,7 +85,7 @@ class ImageDownloader(Downloader):
         
         if img_response and img_response.status_code == 200:
             with self.handle_download(img_url):
-                img = open_img(img_response.raw).convert(mode)
+                img = open_img(BytesIO(img_response.content)).convert(mode)
                 if img.height > MIN_HEIGHT: return img
 
         else: print(f"Skipping: Unable to get image at {img_url}\n")
