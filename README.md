@@ -59,11 +59,11 @@ Downloaded images can be concatenated and saved as a single pdf or a(n) [vertica
 ## Installation
 1. Open terminal
    * Mac
-      * Press `⌘` + `Space` keys
+      * Press <kbd>⌘</kbd> + <kbd>Space</kbd> keys
       * Type `terminal` **OR** (if applicable) your preferred terminal (e.g. `iterm`, etc.)
-      * Press `Enter` key
+      * Press <kbd>Enter</kbd> key
    * Linux
-      * Press `Ctrl` + `Alt` + `T` keys
+      * Press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd> keys
    * Windows
       * Click search box **OR** open Start menu
       * Type `cmd`
@@ -124,14 +124,8 @@ Downloaded images can be concatenated and saved as a single pdf or a(n) [vertica
 
 ### [Visual Studio Code](https://code.visualstudio.com/download)
 1. Open the Command Palette in Visual Studio Code with the relevant keyboard shortcut
-    * Mac
-      ```
-      ⌘ + Shift + P
-      ```
-    * PC
-      ```
-      Ctrl + Shift + P
-      ```
+    * Mac: <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
+    * PC: <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
 2. Search and select `Python: Select Interpreter`
 3. Select the virtual environment (`dl_env`)
 4. Open [`ImageDownloader.py`](src/ImageDownloader.py) or [`MP3Downloader.py`](src/MP3Downloader.py)
